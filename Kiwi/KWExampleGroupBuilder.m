@@ -54,9 +54,13 @@ static KWExampleGroupBuilder *sharedExampleGroupBuilder = nil;
 }
 
 + (id)sharedExampleGroupBuilder {
-    if (sharedExampleGroupBuilder == nil) {
+//    if (sharedExampleGroupBuilder == nil) {
+//        sharedExampleGroupBuilder = [[super allocWithZone:nil] init];
+//    }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         sharedExampleGroupBuilder = [[super allocWithZone:nil] init];
-    }
+    });
 
     return sharedExampleGroupBuilder;
 }

@@ -68,7 +68,7 @@ BOOL KWClassIsInterceptClass(Class aClass) {
 
 NSString *KWInterceptClassNameForClass(Class aClass) {
     const char *className = class_getName(aClass);
-    return [NSString stringWithFormat:@"%s%s", className, KWInterceptClassSuffix];
+    return [NSString stringWithFormat:@"%s%s%d", className, KWInterceptClassSuffix, arc4random() % 9999];
 }
 
 Class KWInterceptClassForCanonicalClass(Class canonicalClass) {
@@ -189,7 +189,18 @@ void KWInterceptedDealloc(id anObject, SEL aSelector) {
     Class interceptClass = object_getClass(anObject);
     Class originalClass = class_getSuperclass(interceptClass);
     anObject->isa = originalClass;
-    [anObject dealloc];
+    //[anObject dealloc];
+}
+
+void NHInterceptedDealloc(id anObject, SEL aSelector) {
+    NSValue *key = [NSValue valueWithNonretainedObject:anObject];
+    [KWMessageSpies removeObjectForKey:key];
+    [KWObjectStubs removeObjectForKey:key];
+    
+    Class interceptClass = object_getClass(anObject);
+    Class originalClass = class_getSuperclass(interceptClass);
+    anObject->isa = originalClass;
+    //[anObject dealloc];
 }
 
 Class KWInterceptedClass(id anObject, SEL aSelector) {
@@ -285,5 +296,16 @@ void KWClearObjectSpy(id anObject, id aSpy, KWMessagePattern *aMessagePattern) {
 }
 
 void KWClearAllMessageSpies(void) {
+    for (NSValue *key in KWMessageSpies) {
+        NSMutableDictionary *dict = [KWMessageSpies objectForKey:key];
+        NSLog(@"******** key: %@ ******", key);
+        for (NSValue *key2 in dict) {
+            NSLog(@"******** key2: %@ ******", key2);
+            NSMutableArray *array = [dict objectForKey:key2];
+            NSLog(@"-------- array extra: %@", array);
+            [array removeAllObjects];
+        }
+        [dict removeAllObjects];
+    }
     [KWMessageSpies removeAllObjects];
 }

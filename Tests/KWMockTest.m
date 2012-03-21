@@ -252,7 +252,7 @@
     id cruiser = [mock mutableCopy];
     STAssertEquals(mock, cruiser, @"expected copy to be stubbed");
     [mock clearStubs];
-    //STAssertThrows([mock mutableCopy], @"expected copy to be unstubbed"); // NSInvocation bug
+    STAssertThrows([mock mutableCopy], @"expected copy to be unstubbed"); // NSInvocation bug
 }
 
 - (void)testItShouldStubInit {

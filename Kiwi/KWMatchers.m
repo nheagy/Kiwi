@@ -17,13 +17,17 @@
 static id sharedMatchers = nil;
 
 + (void)initialize {
-  if (self == [KWMatchers class]) {
-    sharedMatchers = [[self alloc] init];
-  }
+    NSLog(@"*********************************************this is new code*********************************************");
 }
 
 + (id)matchers {
-  return sharedMatchers;
+    NSLog(@"*********************************************this is new code 2*********************************************");
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedMatchers = [[self alloc] init];
+    });
+    return sharedMatchers;
 }
 
 - (id)init {
