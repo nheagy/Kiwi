@@ -56,6 +56,18 @@
     STAssertTrue(spy2.wasNotified, @"expected object to notify spies");
 }
 
+//- (void)testItShouldNotStubMultipleInstancesOfTheSameObject {
+//    Cruiser *cruiserOne = [Cruiser cruiserWithCallsign:@"NCC-1701"];
+//    Cruiser *cruiserTwo = [Cruiser cruiserWithCallsign:@"NCC-1702"];
+//    
+//    [[[cruiserOne should] receiveAndReturn:@"TESTER SHIP"] classification];
+//    [[[cruiserTwo should] receive] crewComplement];
+//    
+//    NSString *cruiserTwoClassification = [cruiserTwo classification];
+//    
+//    [[cruiserTwoClassification should] equal:@"THIS FAILS"];
+//}
+
 @end
 
 #endif // #if KW_TESTS_ENABLED

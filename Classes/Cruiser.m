@@ -112,6 +112,15 @@
     return aMass * 9.8f;
 }
 
+- (float)orbitEarth {
+    return [self orbitPeriodForMass:1];
+}
+
+- (float)orbitHome
+{
+    return [self orbitEarth];
+}
+
 #pragma mark -
 #pragma mark Jumping
 

@@ -17,11 +17,9 @@
 static id sharedMatchers = nil;
 
 + (void)initialize {
-    NSLog(@"*********************************************this is new code*********************************************");
 }
 
 + (id)matchers {
-    NSLog(@"*********************************************this is new code 2*********************************************");
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

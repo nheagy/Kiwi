@@ -60,6 +60,8 @@
 
 - (void)orbitPlanet:(id)aPlanet;
 - (float)orbitPeriodForMass:(float)aMass;
+- (float)orbitEarth;
+- (float)orbitHome;
 
 #pragma mark -
 #pragma mark Jumping
