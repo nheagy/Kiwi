@@ -69,11 +69,11 @@ BOOL KWClassIsInterceptClass(Class aClass) {
 NSString *KWInterceptClassNameForClass(Class aClass) {
     const char *className = class_getName(aClass);
     
-    NSLog(@"OLD BROKEN CODE");
-    return [NSString stringWithFormat:@"%s%s", className, KWInterceptClassSuffix];
+    //NSLog(@"OLD BROKEN CODE");
+    //return [NSString stringWithFormat:@"%s%s", className, KWInterceptClassSuffix];
     
-    //NSLog(@"NEW HOT CODE");
-    //return [NSString stringWithFormat:@"%s%s%d", className, KWInterceptClassSuffix, arc4random() % 9999];
+    NSLog(@"NEW HOT CODE");
+    return [NSString stringWithFormat:@"%s%s%d", className, KWInterceptClassSuffix, arc4random() % 9999];
 }
 
 Class KWInterceptClassForCanonicalClass(Class canonicalClass) {
@@ -197,11 +197,7 @@ void KWInterceptedDealloc(id anObject, SEL aSelector) {
     [anObject dealloc];
 }
 
-void NHInterceptedDealloc(id anObject, SEL aSelector) {
-    NSValue *key = [NSValue valueWithNonretainedObject:anObject];
-    [KWMessageSpies removeObjectForKey:key];
-    [KWObjectStubs removeObjectForKey:key];
-    
+void NHInterceptedDealloc(id anObject, SEL aSelector) {    
     Class interceptClass = object_getClass(anObject);
     Class originalClass = class_getSuperclass(interceptClass);
     anObject->isa = originalClass;
@@ -257,6 +253,11 @@ void KWClearObjectStubs(id anObject) {
 }
 
 void KWClearAllObjectStubs(void) {
+    // ensure we remove all stubs in the event that an object 
+    for (NSValue *objectKey in KWObjectStubs) {
+        id spiedObject = [objectKey nonretainedObjectValue];
+        NHInterceptedDealloc(spiedObject, nil);
+    }
     [KWObjectStubs removeAllObjects];
 }
 
@@ -301,5 +302,9 @@ void KWClearObjectSpy(id anObject, id aSpy, KWMessagePattern *aMessagePattern) {
 }
 
 void KWClearAllMessageSpies(void) {
+    for (NSValue *objectKey in KWMessageSpies) {
+        id spiedObject = [objectKey nonretainedObjectValue];
+        NHInterceptedDealloc(spiedObject, nil);
+    }
     [KWMessageSpies removeAllObjects];
 }

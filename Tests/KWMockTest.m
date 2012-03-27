@@ -87,23 +87,21 @@
 */
 
 - (void)testItShouldBeOkToStubOnSingletons {
-    //[[Galaxy sharedGalaxy] stub:@selector(notifyEarth)];
-    TestSpy *spy = [TestSpy testSpy];
-    KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(notifyEarth)];
-    [[Galaxy sharedGalaxy] addMessageSpy:spy forMessagePattern:messagePattern];
+    TestSpy *firstSpy = [TestSpy testSpy];
+    KWMessagePattern *firstMessagePattern = [KWMessagePattern messagePatternWithSelector:@selector(notifyEarth)];
+    [[Galaxy sharedGalaxy] addMessageSpy:firstSpy forMessagePattern:firstMessagePattern];
     
+    //NHInterceptedDealloc([Galaxy sharedGalaxy], nil);
     KWClearAllMessageSpies();
     KWClearAllObjectStubs();
     
-    [[Galaxy sharedGalaxy] stub:@selector(name)];
-    
-    //TestSpy *spy = [TestSpy testSpy];
-    //KWMessagePattern *messagePattern = [KWMessagePattern messagePatternWithSelector:@selector(notifyPlanet:)];
-    //[[Galaxy sharedGalaxy] addMessageSpy:spy forMessagePattern:messagePattern];
+    TestSpy *secondSpy = [TestSpy testSpy];
+    KWMessagePattern *secondMessagePattern = [KWMessagePattern messagePatternWithSelector:@selector(notifyPlanet:)];
+    [[Galaxy sharedGalaxy] addMessageSpy:secondSpy forMessagePattern:secondMessagePattern];
     
     [[Galaxy sharedGalaxy] notifyEarth];
     
-    STAssertTrue(!spy.wasNotified, @"WAH WAH I SAD");
+    STAssertTrue(secondSpy.wasNotified, @"WAH WAH I SAD");
 }
 
 - (void)testItShouldStubWithASelectorAndReturnValue {
